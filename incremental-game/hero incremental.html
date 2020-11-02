@@ -678,6 +678,7 @@ function rebirthResets() {
 	if(quests_list["misc"]["time"].completed == false) {
 		quests_list["misc"]["time"].start = Date.now()/1000
 	}
+	quests_list["misc"]["noEquipment"].didEquip = false
 	for(i=1; i<highestArea; i++) {
 		battle.removeButton("area " + i)
 	}
@@ -764,6 +765,7 @@ function templeResets() {
 	quests_list = Object.assign({}, original_quests_list)
 	rebirth = Object.assign({}, rebirth_original)
 	rebirth_points = 0
+	quests_list["misc"]["noEquipment"].didEquip = false
 
 	for(i=1; i<highestArea; i++) {
 		battle.removeButton("area " + i)
