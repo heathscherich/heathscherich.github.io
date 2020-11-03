@@ -536,6 +536,7 @@ var currentArea = 1,
 savefile = localStorage.getItem("savefile")
 savefile = JSON.parse(savefile)
 if(savefile != undefined) {
+	currentStage = savefile.currentStage
 	templeRewards = savefile.templeRewards
 	questStore = savefile.questStore
 	currentArea = savefile.currentArea
@@ -549,6 +550,10 @@ if(savefile != undefined) {
 	quests_list = savefile.quests_list
 	inventory = savefile.inventory
 	team = savefile.team
+
+	if(currentStage == undefined) {
+		currentStage = 1
+	}
 
 	for(i=0; i<highestStages.length; i++) {
 		if(highestStages[i] == 0) {
@@ -657,6 +662,7 @@ function loadArea(area) {
 
 	quests_list["misc"]["time"].lastSaveDate = Date.now()/1000
 	savefile = {
+		currentStage: currentStage,
 		templeRewards: templeRewards,
 		questStore: questStore,
 		currentArea: currentArea,
@@ -2006,6 +2012,112 @@ function drawStats() {
 		ctx.fillText("Ally Level: " + rebirth["ally"].level + " Cost: " + rebirth["ally"].cost, 26, 190)
 		ctx.fillText("Equipment Level: " + rebirth["equipment"].level + " Cost: " + rebirth["equipment"].cost, 26, 210)
 		ctx.fillText("Resource Level: " + rebirth["resource"].level + " Cost: " + rebirth["resource"].cost, 26, 230)
+
+		stats.addButton("manualsave", "Save", "16px Arial", "black", 10, 270, function() {
+			quests_list["misc"]["time"].lastSaveDate = Date.now()/1000
+			savefile = {
+				currentStage: currentStage,
+				templeRewards: templeRewards,
+				questStore: questStore,
+				currentArea: currentArea,
+				devmode: devmode,
+				housing: housing,
+				support: support,
+				rebirth_points: rebirth_points,
+				resources: resources,
+				highestStages: highestStages,
+				rebirth: rebirth,
+				quests_list: quests_list,
+				inventory: inventory,
+				team: team
+			}
+			localStorage.setItem("savefile", JSON.stringify(savefile))
+		}, 75, 25)
+		stats.addButton("exportsave", "Export", "16px Arial", "black", 95, 270, function() {
+		let sf = btoa(JSON.stringify(savefile))
+		var file = new Blob([sf], {type: "text/plain"})
+		var elm = document.createElement("a")
+		var url = URL.createObjectURL(file)
+		elm.href = url
+		let date = (new Date()).toLocaleDateString().split("/")
+		let filename = "Hero_Incremental_" + date[0] + "_" + date[1] + "_" + date[2]
+		elm.download = filename
+		document.body.appendChild(elm)
+		elm.click()
+		setTimeout(function() {
+			document.body.removeChild(elm)
+			window.URL.revokeObjectURL(url)
+		}, 0)
+		}, 75, 25)
+		stats.addButton("importsave", "Import", "16px Arial", "black", 180, 270, function() {
+			function readFile(e) {
+				file = e.target.files[0]
+				if (!file) {
+					return
+				}
+				var reader = new FileReader()
+				reader.onload = function(e) {
+					var sf = e.target.result
+					sf = atob(sf)
+					localStorage.setItem("savefile", sf)
+					sf = JSON.parse(sf)
+					if(sf != undefined) {
+						currentStage = sf.currentStage
+						templeRewards = sf.templeRewards
+						questStore = sf.questStore
+						currentArea = sf.currentArea
+						devmode = sf.devmode
+						housing = sf.housing
+						support = sf.support
+						rebirth_points = sf.rebirth_points
+						resources = sf.resources
+						highestStages = sf.highestStages
+						rebirth = sf.rebirth
+						quests_list = sf.quests_list
+						inventory = sf.inventory
+						team = sf.team
+
+						if(currentStage == undefined) {
+							currentStage = 1
+						}
+
+						for(i=0; i<highestStages.length; i++) {
+							if(highestStages[i] == 0) {
+								highestArea = i
+								break
+							}
+							if(i == highestStages.length - 1) {
+								highestArea = i + 1
+							}
+						}
+
+						if(quests_list["misc"]["noEquipment"].progress >= 4) {
+							baseBonus = 3
+
+							team[0].attack = (baseBonus - 1)**9 + team[0].baseAttack**baseBonus + Math.sqrt(team[0].experience)/2
+							team[0].defence = team[0].baseDefence*baseBonus**3 + Math.sqrt(team[0].experience)
+							team[0].speed = 2 + (1.5 + (baseBonus - 1)**2)*(rebirth["hero"].level)
+						}
+						if(quests_list["misc"]["meteor"].progress >= 4) {
+							inventory["iron ring"] = Object.assign({}, drops["iron ring"])
+							inventory["iron ring"].owned = 1
+							inventory["iron ring"].level = 1
+						}
+						quests_list["misc"]["time"].start += Date.now()/1000 - quests_list["misc"]["time"].lastSaveDate
+					}
+					document.body.removeChild(elm)
+				}
+				reader.readAsText(file)
+			}
+			var elm = document.createElement("input")
+			elm.type = "file"
+			elm.addEventListener("change", readFile)
+			document.body.appendChild(elm)
+			elm.click()
+		}, 75, 25)
+		stats.drawButton("manualsave")
+		stats.drawButton("importsave")
+		stats.drawButton("exportsave")
 	}
 	pageLoadChecker.stats = true
 }
