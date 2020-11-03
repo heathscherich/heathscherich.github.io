@@ -2316,7 +2316,7 @@ var main = function() {
 					for(j=0; j<enemies.length; j++) {
 						if(enemies[j].x < support["meteor"].meteors[i].x + 128/4 && enemies[j].x > support["meteor"].meteors[i].x - 128/4
 							&& enemies[j].y < support["meteor"].meteors[i].y + 128/4 && enemies[j].y > support["meteor"].meteors[i].y - 128/4) {
-							enemies[j].health -= 40*(support["meteor"].level + 1)
+							enemies[j].health -= 8*1.65**support["meteor"].level + 25*support["meteor"].level
 
 							if(enemies[j].health <= 0) {
 								deaths.push(j)
@@ -2367,8 +2367,8 @@ var main = function() {
 			}
 			if(templeRewards["wisdom"]) {
 				team[0].experience += reward
-				team[0].attack = team[0].baseAttack + Math.sqrt(team[0].experience)/2
-				team[0].defence = team[0].baseDefence + Math.sqrt(team[0].experience)
+				team[0].attack = (baseBonus - 1)**9 + team[0].baseAttack**baseBonus + Math.sqrt(team[0].experience)/2
+				team[0].defence = team[0].baseDefence*baseBonus**3 + Math.sqrt(team[0].experience)
 			}
 
 			let roll = 1000*Math.random()
@@ -2468,7 +2468,7 @@ var main = function() {
 					if(inventory[item_dropped].type == "sword" || inventory[item_dropped].type == "magic" || inventory[item_dropped].type == "bow") {
 						inventory[item_dropped].attack = inventory[item_dropped].attack*(1.4**rebirth["equipment"].level)
 
-						if(questStore["meleeSwap"].toggled && inventory[item_dropped].type == "sword") {
+						if(questStore["meleeSwap"].toggled && inventory[item_dropped].type == "sword" && team[0].weapon != "hands") {
 							if(team[0].tempWeapon == "") {
 								team[0].tempWeapon = item_dropped
 							}
