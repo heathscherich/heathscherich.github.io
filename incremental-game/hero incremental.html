@@ -560,7 +560,7 @@ if(savefile != undefined) {
 		}
 	}
 
-	if(quests_list["misc"]["noEquipment"].progress >= 3) {
+	if(quests_list["misc"]["noEquipment"].progress >= 4) {
 		baseBonus = 3
 
 		team[0].attack = (baseBonus - 1)**9 + team[0].baseAttack**baseBonus + Math.sqrt(team[0].experience)/2
@@ -679,6 +679,7 @@ function rebirthResets() {
 		quests_list["misc"]["time"].start = Date.now()/1000
 	}
 	quests_list["misc"]["noEquipment"].didEquip = false
+	quests_list["misc"]["noEquipment"].progress = 1
 	for(i=1; i<highestArea; i++) {
 		battle.removeButton("area " + i)
 	}
@@ -766,7 +767,7 @@ function templeResets() {
 	rebirth = Object.assign({}, rebirth_original)
 	rebirth_points = 0
 	quests_list["misc"]["noEquipment"].didEquip = false
-
+	quests_list["misc"]["noEquipment"].progress = 1
 	for(i=1; i<highestArea; i++) {
 		battle.removeButton("area " + i)
 	}
@@ -2363,7 +2364,7 @@ var main = function() {
 					if(currentArea == highestArea) {
 						if(quests_list["misc"]["noEquipment"].didEquip == false) {
 							quests_list["misc"]["noEquipment"].progress += 1
-							if(quests_list["misc"]["noEquipment"].progress >= 3) {
+							if(quests_list["misc"]["noEquipment"].progress >= 4) {
 								baseBonus = 3
 
 								team[0].attack = (baseBonus - 1)**9 + team[0].baseAttack**baseBonus + Math.sqrt(team[0].experience)/2
