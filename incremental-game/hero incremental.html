@@ -560,7 +560,7 @@ if(savefile != undefined) {
 		}
 	}
 
-	if(quests_list["misc"]["noEquipment"].progress >= 4) {
+	if(quests_list["misc"]["noEquipment"].progress >= 3) {
 		baseBonus = 3
 
 		team[0].attack = (baseBonus - 1)**9 + team[0].baseAttack**baseBonus + Math.sqrt(team[0].experience)/2
@@ -2363,7 +2363,7 @@ var main = function() {
 					if(currentArea == highestArea) {
 						if(quests_list["misc"]["noEquipment"].didEquip == false) {
 							quests_list["misc"]["noEquipment"].progress += 1
-							if(quests_list["misc"]["noEquipment"].progress >= 4) {
+							if(quests_list["misc"]["noEquipment"].progress >= 3) {
 								baseBonus = 3
 
 								team[0].attack = (baseBonus - 1)**9 + team[0].baseAttack**baseBonus + Math.sqrt(team[0].experience)/2
